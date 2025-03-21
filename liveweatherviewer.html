@@ -60,8 +60,6 @@
     </style>
     <script>
         function saveLocation() {
-            const locFrame = document.getElementById("locFrame");
-            locFrame.src = locFrame.src;
             const lat = document.getElementById("latInput").value;
             const lon = document.getElementById("lonInput").value;
             localStorage.setItem("savedLat", lat);
@@ -82,6 +80,17 @@
             const locFrame = document.getElementById("locFrame");
             locFrame.src = `https://embed.windy.com/embed2.html?lat=3.424&lon=76.069&detailLat=${lat}&detailLon=${lon}&width=1900&height=500&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=3&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
         }
+
+        function refreshFrames() {
+            const frames = ["modelnow", "model24", "modelclose", "locFrame"];
+            frames.forEach(id => {
+                const frame = document.getElementById(id);
+                if (frame) {
+                    frame.src = frame.src;
+                }
+            });
+        }
+        setInterval(refreshFrames, 600000); // Refresh every 10 minutes
 
         window.onload = function() {
             const savedLat = localStorage.getItem("savedLat") || "8.624518";
