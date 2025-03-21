@@ -26,6 +26,10 @@ Live Weather Viewer is an interactive HTML dashboard that displays real-time rad
 3. Set your location using the built-in selection tool.
 4. Monitor live weather conditions with real-time updates.
 
+## Custom Builds ⚙️
+
+For custom-built dashboards with specific parameters and models, contact sampr7@gmail.com.
+
 ## License 📝
 
 This project is open-source and free to use. Feel free to contribute or modify as needed.
