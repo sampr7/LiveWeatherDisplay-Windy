@@ -4,7 +4,7 @@ Live Weather Viewer is an interactive HTML dashboard that displays real-time rad
 
 ## Features ✨
 
-- **Live Radar & Satellite Data** 🛁  
+- **Live Radar & Satellite Data** 📡  
   Get real-time weather radar and satellite imagery for your location.
 
 - **Rain & Thunder Forecast** ⛈️  
