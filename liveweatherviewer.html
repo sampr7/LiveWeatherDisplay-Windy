@@ -1,60 +1,113 @@
 <!DOCTYPE html>
 <html>
-<body style="background-color:black;">
-<!h2 style="color: #4485b8; text-align: center;font-family:verdana;">Live weather viewer</h2>
-
-  <head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
+    <script src="script.js" defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .grid-container {
+            display: grid;
+            width: 100vw;
+            height: 100vh;
+            gap: 5px;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 40% 40% 20%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #frame1 { grid-column: 1; grid-row: 1; }
+        #frame2 { grid-column: 2; grid-row: 1; }
+        #frame3 { grid-column: 3; grid-row: 1; }
+        #modelnow { grid-column: 1; grid-row: 2; }
+        #model24 { grid-column: 2; grid-row: 2; }
+        #modelclose { grid-column: 3; grid-row: 2; }
+        #loc { grid-column: 1 / span 3; grid-row: 3; position: relative; }
+        .floating-input {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(7, auto);
+            }
+            #modelclose { grid-column: 1; grid-row: 6; }
+            #loc { grid-column: 1; grid-row: 7; }
+        }
+    </style>
+    <script>
+        function saveLocation() {
+            const locFrame = document.getElementById("locFrame");
+            locFrame.src = locFrame.src;
+            const lat = document.getElementById("latInput").value;
+            const lon = document.getElementById("lonInput").value;
+            localStorage.setItem("savedLat", lat);
+            localStorage.setItem("savedLon", lon);
+            updateLocFrame(lat, lon);
+        }
 
-  <body>
-<script>
-window.setInterval("reloadIFrame();", 300000);
-<!-- 300000 -->
-function reloadIFrame() {
- var frameHolder1=document.getElementById('sat');
- var frameHolder2=document.getElementById('modelnow');
- var frameHolder3=document.getElementById('model24');
- var frameHolder4=document.getElementById('modelclose');
- var frameHolder5=document.getElementById('loc');
-frameHolder1.src="https://www.ventusky.com/?p=20;78;3&l=satellite"
-frameHolder2.src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18&detailLon=81.738&width=1900&height=250&zoom=3&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
-frameHolder3.src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18.667&detailLon=79.585&width=650&height=450&zoom=4&level=surface&overlay=rainAccu&product=ecmwf&menu=&message=true&marker=&calendar=24&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
-frameHolder4.src="https://embed.windy.com/embed2.html?lat=10.682&lon=77.080&detailLat=8.483&detailLon=76.946&width=1900&height=320&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
-frameHolder5.src="https://embed.windy.com/embed2.html?lat=3.424&lon=76.069&detailLat=8.624518&detailLon=77.03230&width=1900&height=500&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=3&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
-}
-</script>
+        function updateLocFrame(lat, lon) {
+            const frameIds = ["frame1", "frame2", "frame3", "modelnow", "model24", "modelclose", "locFrame"];
+            frameIds.forEach(id => {
+                const frame = document.getElementById(id);
+                if (frame) {
+                    let src = frame.src;
+                    src = src.replace(/lat=[-0-9.]+/, `lat=${lat}`).replace(/lon=[-0-9.]+/, `lon=${lon}`);
+                    frame.src = src;
+                }
+            });
+            const locFrame = document.getElementById("locFrame");
+            locFrame.src = `https://embed.windy.com/embed2.html?lat=3.424&lon=76.069&detailLat=${lat}&detailLon=${lon}&width=1900&height=500&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=3&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+        }
 
-<table border="0" cellpadding="0" cellspacing="0" style="height: 50%; width: 100%;">
-<tbody>
-<tr>
-<td rowspan="2"><iframe width="700" height="540" src="https://embed.windy.com/embed2.html?lat=9.915&lon=76.959&detailLat=9.381&detailLon=76.718&width=940&height=500&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe></td>
-<td><iframe width="500" height="270" src="https://embed.windy.com/embed2.html?lat=8.836&lon=77.146&detailLat=9.381&detailLon=76.718&width=940&height=500&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe></td>
-<td rowspan="2"><iframe id="sat" width="720" height="540" src="https://www.ventusky.com/?p=20;78;3&l=satellite" frameborder="0" scrolling="no"></iframe></td>
-</tr>
-<tr>
-<td><iframe width="500" height="270" src="https://embed.windy.com/embed2.html?lat=8.616&lon=77.039&detailLat=8.602&detailLon=77.026&width=940&height=500&zoom=11&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe></td>
-</tr>
-</tbody>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" style="height: 30%; width: 100%;">
-<tbody>
-<tr>
-<td><iframe id="modelnow" width="640" height="320" src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18&detailLon=81.738&width=1900&height=250&zoom=3&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe></td>
-<td><iframe id="model24" width="640" height="320" src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18.667&detailLon=79.585&width=650&height=450&zoom=4&level=surface&overlay=rainAccu&product=ecmwf&menu=&message=true&marker=&calendar=24&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe></td>
-<td><iframe id="modelclose" width="640" height="320" src="https://embed.windy.com/embed2.html?lat=10.682&lon=77.080&detailLat=8.483&detailLon=76.946&width=1900&height=320&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe></td>
-</tr>
-</tbody>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" style="height: 20%; width: 100%;">
-<tbody>
-<tr>
-<td><iframe width="1920" height="180" id="loc" src="https://embed.windy.com/embed2.html?lat=3.424&lon=76.069&detailLat=8.624518&detailLon=77.03230&width=1900&height=500&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=3&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe></td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-  </body>
-
+        window.onload = function() {
+            const savedLat = localStorage.getItem("savedLat") || "8.624518";
+            const savedLon = localStorage.getItem("savedLon") || "77.03230";
+            document.getElementById("latInput").value = savedLat;
+            document.getElementById("lonInput").value = savedLon;
+            updateLocFrame(savedLat, savedLon);
+        };
+    </script>
+</head>
+<body>
+    <div class="grid-container">
+        <iframe id="frame1" src="https://embed.windy.com/embed2.html?lat=9.915&lon=76.959&zoom=7&overlay=radar"></iframe>
+        <iframe id="frame2" src="https://embed.windy.com/embed2.html?lat=8.836&lon=77.146&zoom=8&overlay=radar"></iframe>
+        <iframe id="frame3" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=4&overlay=satellite&product=satellite&level=surface&lat=18.979&lon=76.729&pressure=true&message=true" frameborder="0"></iframe>
+        <iframe id="modelnow" src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18&detailLon=81.738&width=1900&height=250&zoom=3&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        <iframe id="model24" src="https://embed.windy.com/embed2.html?lat=18&lon=81.738&detailLat=18.667&detailLon=79.585&width=650&height=450&zoom=4&level=surface&overlay=rainAccu&product=ecmwf&menu=&message=true&marker=&calendar=24&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        <iframe id="modelclose" src="https://embed.windy.com/embed2.html?lat=10.682&lon=77.080&detailLat=8.483&detailLon=76.946&width=1900&height=320&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        <div id="loc">
+            <div class="floating-input">
+                <input type="number" id="latInput" placeholder="Latitude">
+                <input type="number" id="lonInput" placeholder="Longitude">
+                <button onclick="saveLocation()">Set Location</button>
+            </div>
+            <iframe id="locFrame" src="https://embed.windy.com/embed2.html?lat=3.424&lon=76.069&detailLat=8.624518&detailLon=77.03230&width=1900&height=500&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=3&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"></iframe>
+        </div>
+    </div>
+</body>
 </html>
