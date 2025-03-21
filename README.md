@@ -8,7 +8,7 @@ Live Weather Viewer is an interactive HTML dashboard that displays real-time rad
   Get real-time weather radar and satellite imagery for your location.
 
 - **Rain & Thunder Forecast** ⛈️  
-  Visualize ECMWF model forecasts, including rain accumulation and thunderstorm probabilities.
+ECMWF model forecasts of rain accumulation and other meteorological parameters.
 
 - **Custom Location Selection** 📍  
   Set your preferred location to view relevant weather data.
